@@ -14,11 +14,19 @@ elif file_dir.lower() == current_dir.lower():
 
 print(f"ват {os.getcwd()}")
 
+# color constants
+C_WHITE = (255, 255, 255)
+C_BLACK = (0, 0, 0)
+C_RED = (255, 0, 0)
+C_BLUE = (0, 0, 255)
+C_GREEN = (0, 255, 0)
+
 # json settings
-setting_fps = 60
-setting_window_size = (1920, 1000)
-setting_window_caption = "CosmoGames"
-setting_window_icon = "images/icon/empire_at_war.jpg"
+setting_fps: int = 60
+setting_window_size: tuple = (1920, 1000)
+setting_window_caption: str = "CosmoGames"
+setting_window_icon: str = "images/icon/empire_at_war.jpg"
+setting_bg_wid, setting_bg_hid = 1920, 1000
 
 # program settings
 pygame.init()
@@ -29,8 +37,28 @@ pygame.display.set_icon(pygame.image.load(setting_window_icon))
 _menu_ = True
 _game_ = False
 _settings_ = False
+_mcbreak_ = False
+_scbreak_ = False
+_gcbreak_ = False
 fps = pygame.time.Clock()
 log_file = str()
+
+class Area():
+    def __init__(self, x, y, wid, hid, win, col):
+        self.x = x
+        self.y = y
+        self.wid = wid
+        self.hid = hid
+        self.win = win
+        self.col = col
+    def drawArea(self):
+        rect = pygame.rect.Rect(self.x, self.y, self.wid, self.hid)
+        pygame.draw.rect(self.win, self.col, rect)
+
+        self.rectArea = rect
+    def drawCountur(self, cont_wid: int, cont_col: tuple):
+        countur_rect = pygame.rect.Rect(self.x - cont_wid, self.y - cont_wid, self.wid + (cont_wid * 2), self.hid + (cont_wid * 2))
+        pygame.draw.rect(self.win, cont_col, countur_rect)
 
 class Button():
     def __init__(self, x, y, wid, hid, win, col, cont_col, texture = None):
@@ -73,11 +101,33 @@ def log(level: int, message: str, method: str):
     print(f"[{level}: {method}]: {message}")
 
 def menu(bg):
-    pass
+    # bgArea = Area(0, 0, setting_bg_wid, setting_bg_hid, bg, ())
+    bg.fill(C_BLUE)
 def settings(bg):
     pass
 def main(bg):
     pass
 
 # startlog()
-fps.tick()
+while _menu_:
+    fps.tick(setting_fps)
+
+    _settings_ # init in cycle
+    _game_
+    _mcbreak_
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            _settings_ = False
+            _game_ = False
+            pygame.quit()
+            _menu_ = False
+            _mcbreak_ = True
+            break
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F3:
+                print(fps.get_fps())
+    if _mcbreak_:
+        del _mcbreak_
+        break
+    pygame.display.update()
