@@ -2,10 +2,34 @@
 
 import pygame
 import json
+import os
 
+file_dir = os.getcwd()
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+if file_dir.lower() != current_dir.lower():
+    os.chdir(current_dir)
+elif file_dir.lower() == current_dir.lower():
+    pass
+
+print(f"ват {os.getcwd()}")
+
+# json settings
+setting_fps = 60
+setting_window_size = (1920, 1000)
+setting_window_caption = "CosmoGames"
+setting_window_icon = "images/icon/empire_at_war.jpg"
+
+# program settings
 pygame.init()
-bg = pygame.display.set_mode((1920, 1000))
+bg = pygame.display.set_mode(setting_window_size)
+pygame.display.set_caption(setting_window_caption)
+pygame.display.set_icon(pygame.image.load(setting_window_icon))
+
 _menu_ = True
+_game_ = False
+_settings_ = False
+fps = pygame.time.Clock()
 log_file = str()
 
 class Button():
@@ -55,4 +79,5 @@ def settings(bg):
 def main(bg):
     pass
 
-startlog()
+# startlog()
+fps.tick()
