@@ -37,12 +37,13 @@ pygame.display.set_icon(pygame.image.load(setting_window_icon))
 _menu_ = True
 _game_ = False
 _settings_ = False
-_mcbreak_ = False
-_scbreak_ = False
-_gcbreak_ = False
+_mcbreak_ = False # menu cycle break
+_scbreak_ = False # settings cycle break
+_gcbreak_ = False # game cycle break
 fps = pygame.time.Clock()
 log_file = str()
 
+# classes
 class Area():
     def __init__(self, x, y, wid, hid, win, col):
         self.x = x
@@ -59,6 +60,19 @@ class Area():
     def drawCountur(self, cont_wid: int, cont_col: tuple):
         countur_rect = pygame.rect.Rect(self.x - cont_wid, self.y - cont_wid, self.wid + (cont_wid * 2), self.hid + (cont_wid * 2))
         pygame.draw.rect(self.win, cont_col, countur_rect)
+
+class Text():
+    def __init__(self, x, y, font, fsize, fcol, fmod = None):
+        self.x = x
+        self.y = y
+        self.font = font
+        self.fsize = fsize
+        self.fcol = fcol
+        self.fmod = fmod
+    def drawText(self, text):
+        pass
+    def drawTextAgain(self, text):
+        pass
 
 class Button():
     def __init__(self, x, y, wid, hid, win, col, cont_col, texture = None):
@@ -81,6 +95,7 @@ class Button():
     def currentButton(self):
         pass
 
+# log functions
 def startlog():
     global log_file
     
@@ -96,10 +111,10 @@ def startlog():
         open_col_f.write(str(open_col))
     open_col_f.close()
     del open_col_f
-
 def log(level: int, message: str, method: str):
     print(f"[{level}: {method}]: {message}")
 
+# standart functions
 def menu(bg):
     # bgArea = Area(0, 0, setting_bg_wid, setting_bg_hid, bg, ())
     bg.fill(C_BLUE)
@@ -108,7 +123,12 @@ def settings(bg):
 def main(bg):
     pass
 
+# features
+def debugMenu(bg):
+
+
 # startlog()
+menu(bg)
 while _menu_:
     fps.tick(setting_fps)
 
@@ -127,6 +147,7 @@ while _menu_:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F3:
                 print(fps.get_fps())
+            if event.key == pygame.
     if _mcbreak_:
         del _mcbreak_
         break
