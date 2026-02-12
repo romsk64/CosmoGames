@@ -25,8 +25,9 @@ C_GREEN = (0, 255, 0)
 setting_fps: int = 60
 setting_window_size: tuple = (1920, 1000)
 setting_window_caption: str = "CosmoGames"
-setting_window_icon: str = "images/icon/empire_at_war.jpg"
+setting_window_icon: str = "assets/icon/empire_at_war.jpg"
 setting_bg_wid, setting_bg_hid = 1920, 1000
+setting_count_file: str = "config/system.txt"
 
 # program settings
 pygame.init()
@@ -42,6 +43,9 @@ _scbreak_ = False # settings cycle break
 _gcbreak_ = False # game cycle break
 fps = pygame.time.Clock()
 log_file = str()
+
+# debug
+debugFps = fps.get_fps()
 
 # classes
 class Area():
@@ -62,17 +66,32 @@ class Area():
         pygame.draw.rect(self.win, cont_col, countur_rect)
 
 class Text():
-    def __init__(self, x, y, font, fsize, fcol, fmod = None):
+    def __init__(self, x, y, win, font, fsize, fcol, fmod = None):
         self.x = x
         self.y = y
-        self.font = font
+        self.win = win
+        self.font = font # "assets/fonts/DroidSansMono.ttf"
         self.fsize = fsize
         self.fcol = fcol
         self.fmod = fmod
     def drawText(self, text):
-        pass
+        drawingText = pygame.font.Font(self.font, self.fsize)
+        dtext = drawingText.render(text, True, self.fcol)
+        self.win.blit(dtext, (self.x, self.y))
     def drawTextAgain(self, text):
         pass
+
+    def drawSysText(self, text):
+        drawingText = pygame.font.SysFont(self.font, self.fsize) # желательно consolas
+        dtext = drawingText.render(text, True, self.fcol)
+        self.win.blit(dtext, (self.x, self.y))
+    def drawSysTextAgain(self, text):
+        pass
+
+class TextFromMap(): # текст с одной картинки map.png, возможно будет удалено
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 class Button():
     def __init__(self, x, y, wid, hid, win, col, cont_col, texture = None):
@@ -99,7 +118,7 @@ class Button():
 def startlog():
     global log_file
     
-    with open("system.txt", "r") as open_col_f:
+    with open(setting_count_file, "r") as open_col_f:
         open_col = open_col_f.read(10)
         log_file = f"logs/log_{open_col}"
         open_col = int(open_col)
@@ -107,7 +126,7 @@ def startlog():
     open_col_f.close()
     del open_col_f
 
-    with open("system.txt", "w") as open_col_f:
+    with open(setting_count_file, "w") as open_col_f:
         open_col_f.write(str(open_col))
     open_col_f.close()
     del open_col_f
@@ -125,10 +144,13 @@ def main(bg):
 
 # features
 def debugMenu(bg):
-
+    global debugFps
 
 # startlog()
 menu(bg)
+text = Text(0, 0, bg, "Consolas", 16, (255, 255, 255))
+text.drawSysText("Привет")
+
 while _menu_:
     fps.tick(setting_fps)
 
@@ -147,7 +169,8 @@ while _menu_:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F3:
                 print(fps.get_fps())
-            if event.key == pygame.
+            if event.key == pygame.K_1:
+                pass # game
     if _mcbreak_:
         del _mcbreak_
         break
