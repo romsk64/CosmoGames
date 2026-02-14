@@ -43,6 +43,7 @@ _scbreak_ = False # settings cycle break
 _gcbreak_ = False # game cycle break
 fps = pygame.time.Clock()
 log_file = str()
+hitbox_flist = list()
 
 # debug
 debugFps = fps.get_fps()
@@ -62,7 +63,7 @@ class Area():
         rect = pygame.rect.Rect(self.x, self.y, self.wid, self.hid)
         pygame.draw.rect(self.win, self.col, rect)
 
-        self.rectArea = rect
+        self.rect = rect
     def drawCountur(self, cont_wid: int, cont_col: tuple):
         countur_rect = pygame.rect.Rect(self.x - cont_wid, self.y - cont_wid, self.wid + (cont_wid * 2), self.hid + (cont_wid * 2))
         pygame.draw.rect(self.win, cont_col, countur_rect)
@@ -117,6 +118,8 @@ class Button():
 
         rect = pygame.rect.Rect(self.x, self.y, self.wid, self.hid)
         pygame.draw.rect(self.win, self.col, rect)
+        
+        self.rect = rect
     def currentButton(self):
         cw = self.cont_wid
 
@@ -124,6 +127,52 @@ class Button():
         pygame.draw.rect(self.win, self.cur_cont_col, downrect)
 
         self.drawButton(True)
+        # self.rect.y
+
+class Hitbox(pygame.sprite.Sprite):
+    def __init__(self, obj):
+        wid = obj.rect.width
+        hid = obj.rect.height
+        x = obj.rect.x
+        y = obj.rect.y
+
+        super().__init__(self)
+        self.image = pygame.image.load("assets/game/hitbox.png").convert_alpha()
+        self.rect = pygame.rect.Rect(x, y, wid, hid)
+        
+        self.obj = obj
+
+class arcanoid:
+    class Ball():
+        def __init__(self, spdpx, x, y, texture):
+            self.x = x
+            self.y = y
+            self.spdpx = spdpx
+            self.texture = texture
+        def move(self, naprav): # naprav -> направление
+            pass
+        def rectInit(self):
+            pass
+        def drawTexture(self, nx = None, ny = None): # nx -> new x, ny -> new y
+            if nx != None and ny != None:
+                return 1
+            else:
+                pass
+
+    class Platform():
+        def __init__(self, spdpx, x, y, texture):
+            self.x = x
+            self.y = y
+            self.spdpx = spdpx
+        def move(self, naprav): # naprav -> направление
+            pass
+        def rectInit(self):
+            pass
+        def drawTexture(self, nx = None, ny = None): # nx -> new x, ny -> new y
+            if nx != None and ny != None:
+                return 1
+            else:
+                pass
 
 # log functions
 def startlog():
@@ -162,6 +211,21 @@ def debugMenu(bg):
     global debugFps
     global debugLevelUp # коллекция уровней    в итоге получается вот так:
     global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
+
+def debugHitboxMenu(bg, obj_list):
+    global hitbox_flist
+
+    for _ in len(obj_list):
+        hitbox_flist.append(None)
+
+    for obj in len(obj_list):
+        # wid = obj_list[obj].rect.width
+        # hid = obj_list[obj].rect.height
+        # x = obj_list[obj].rect.x
+        # y = obj_list[obj].rect.y
+        
+        objhb = Hitbox(obj_list[obj])
+        hitbox_flist[obj] = objhb
 
 # startlog()
 menu(bg)
