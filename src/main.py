@@ -37,10 +37,14 @@ pygame.display.set_icon(pygame.image.load(setting_window_icon))
 
 _menu_ = True
 _game_ = False
+_gameca_ = False
+_gamecr_ = False
 _settings_ = False
 _mcbreak_ = False # menu cycle break
 _scbreak_ = False # settings cycle break
 _gcbreak_ = False # game cycle break
+_gcabreak_ = False
+_gcrbreak_ = False
 fps = pygame.time.Clock()
 log_file = str()
 hitbox_flist = list()
@@ -129,6 +133,38 @@ class Button():
         self.drawButton(True)
         # self.rect.y
 
+class Debug():
+    def __init__(self, win):
+        global debugFps
+        global debugLevelUp # коллекция уровней    в итоге получается вот так:
+        global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
+
+        self.win = win
+
+        self.debugMenu_ = False
+        self.debugHitboxMenu_ = False
+    def debugMenu(self):
+        global debugFps
+        global debugLevelUp # коллекция уровней    в итоге получается вот так:
+        global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
+
+        self.debugMenu_ = True
+    def debugHitboxMenu(self, obj_list):
+        global hitbox_flist
+
+        for _ in len(obj_list):
+            hitbox_flist.append(None)
+        
+        for obj in len(obj_list):
+            # wid = obj_list[obj].rect.width
+            # hid = obj_list[obj].rect.height
+            # x = obj_list[obj].rect.x
+            # y = obj_list[obj].rect.y
+            
+            objhb = Hitbox(obj_list[obj])
+            hitbox_flist[obj] = objhb
+        self.debugHitboxMenu_ = True
+
 class Hitbox(pygame.sprite.Sprite):
     def __init__(self, obj):
         wid = obj.rect.width
@@ -137,10 +173,17 @@ class Hitbox(pygame.sprite.Sprite):
         y = obj.rect.y
 
         super().__init__(self)
-        self.image = pygame.image.load("assets/game/hitbox.png").convert_alpha()
+        self.image_pr = pygame.image.load("assets/game/hitbox.png").convert_alpha()
         self.rect = pygame.rect.Rect(x, y, wid, hid)
         
         self.obj = obj
+    def drawHitbox(self):
+        wid = self.obj.rect.width
+        hid = self.obj.rect.height
+        x = self.obj.rect.x
+        y = self.obj.rect.y
+
+        wid
 
 class arcanoid:
     class Ball():
@@ -164,6 +207,7 @@ class arcanoid:
             self.x = x
             self.y = y
             self.spdpx = spdpx
+            self.texture = texture
         def move(self, naprav): # naprav -> направление
             pass
         def rectInit(self):
@@ -205,54 +249,128 @@ def cArcanoid(bg): # типа арканоида, но в космосе
     pass
 def cRaingers(bg): # что-то типа рпг
     pass
+def gamemenu(bg):
+    pass
 
 # features
-def debugMenu(bg):
-    global debugFps
-    global debugLevelUp # коллекция уровней    в итоге получается вот так:
-    global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
+# def debugMenu(bg):
+#     global debugFps
+#     global debugLevelUp # коллекция уровней    в итоге получается вот так:
+#     global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
 
-def debugHitboxMenu(bg, obj_list):
-    global hitbox_flist
+# def debugHitboxMenu(bg, obj_list):
+#     global hitbox_flist
 
-    for _ in len(obj_list):
-        hitbox_flist.append(None)
+#     for _ in len(obj_list):
+#         hitbox_flist.append(None)
 
-    for obj in len(obj_list):
-        # wid = obj_list[obj].rect.width
-        # hid = obj_list[obj].rect.height
-        # x = obj_list[obj].rect.x
-        # y = obj_list[obj].rect.y
+#     for obj in len(obj_list):
+#         # wid = obj_list[obj].rect.width
+#         # hid = obj_list[obj].rect.height
+#         # x = obj_list[obj].rect.x
+#         # y = obj_list[obj].rect.y
         
-        objhb = Hitbox(obj_list[obj])
-        hitbox_flist[obj] = objhb
+#         objhb = Hitbox(obj_list[obj])
+#         hitbox_flist[obj] = objhb
+
+# cycle
+def reload(): # перезагрузка
+    pass
 
 # startlog()
 menu(bg)
 text = Text(0, 0, bg, "Consolas", 16, (255, 255, 255))
 text.drawSysText("Привет")
 
-while _menu_:
-    fps.tick(setting_fps)
+def cmenu(bg):
+    while _menu_:
+        fps.tick(setting_fps)
 
-    _settings_ # init in cycle
-    _game_
-    _mcbreak_
+        _settings_ # init in cycle
+        _game_
+        _mcbreak_
+        _gameca_
+        _gamecr_
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            _settings_ = False
-            _game_ = False
-            pygame.quit()
-            _menu_ = False
-            _mcbreak_ = True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                _settings_ = False
+                _game_ = False
+                _gameca_ = False
+                _gamecr_ = False
+                pygame.quit()
+                _menu_ = False
+                _mcbreak_ = True
+                break
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F3:
+                    print(fps.get_fps())
+                elif event.key == pygame.K_1:
+                    game(bg) # game
+                    _settings_ = False
+                    _game_ = False
+                    _gameca_ = False
+                    _gamecr_ = False
+
+                    _menu_ = False
+                    _mcbreak_ = True
+                elif event.key == pygame.K_2:
+                    cArcanoid(bg)
+                    _settings_ = False
+                    _game_ = False
+                    _gameca_ = True
+                    _gamecr_ = False
+                    
+                    _menu_ = False
+                    _mcbreak_ = True
+                elif event.key == pygame.K_3:
+                    cRaingers(bg)
+                    _settings_ = False
+                    _game_ = False
+                    _gameca_ = False
+                    _gamecr_ = True
+                    
+                    _menu_ = False
+                    _mcbreak_ = True
+                elif event.key == pygame.K_4:
+                    settings(bg)
+                    _settings_ = True
+                    _game_ = False
+                    _gameca_ = False
+                    _gamecr_ = False
+                    
+                    _menu_ = False
+                    _mcbreak_ = True
+                elif event.key == pygame.K_5 or event.key == pygame.K_q:
+                    _settings_ = False
+                    _game_ = False
+                    _gameca_ = False
+                    _gamecr_ = False
+                    
+                    _menu_ = False
+                    _mcbreak_ = True
+        if _mcbreak_:
+            del _mcbreak_
             break
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_F3:
-                print(fps.get_fps())
-            if event.key == pygame.K_1:
-                pass # game
-    if _mcbreak_:
-        del _mcbreak_
-        break
-    pygame.display.update()
+        pygame.display.update()
+
+def csettings(bg):
+    while _settings_:
+        fps.tick(setting_fps)
+
+        _settings_ # init in cycle
+        _game_
+        _mcbreak_
+        _gameca_
+        _gamecr_
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                _settings_ = False
+                _game_ = False
+                _gameca_ = False
+                _gamecr_ = False
+                pygame.quit()
+                _settings_ = False
+                _scbreak_ = True
+                break
