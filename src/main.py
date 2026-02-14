@@ -22,7 +22,7 @@ C_BLUE = (0, 0, 255)
 C_GREEN = (0, 255, 0)
 
 # json settings
-setting_fps: int = 60
+setting_fps: int = 60 # 0 -> разблокированный фпс
 setting_window_size: tuple = (1920, 1000)
 setting_window_caption: str = "CosmoGames"
 setting_window_icon: str = "assets/icon/empire_at_war.jpg"
@@ -46,6 +46,8 @@ log_file = str()
 
 # debug
 debugFps = fps.get_fps()
+debugLevelUp = 1
+debugLevelDown = 1
 
 # classes
 class Area():
@@ -94,7 +96,7 @@ class TextFromMap(): # текст с одной картинки map.png, воз
         self.y = y
 
 class Button():
-    def __init__(self, x, y, wid, hid, win, col, cont_col, texture = None):
+    def __init__(self, x, y, wid, hid, win, col, cont_col, texture = None, cur_cont_col = (255, 255, 255)):
         self.x = x
         self.y = y
         self.wid = wid
@@ -103,16 +105,25 @@ class Button():
         self.col = col
         self.cont_col = cont_col
         self.texture = texture
+        self.cur_cont_col = cur_cont_col
         
         self.cont_wid = 2
-    def drawButton(self, fromMain): # True/False
-        rect = pygame.rect.Rect(self.x, self.y, self.wid, self.hid)
-        pygame.draw.rect(self.win, self.col, rect)
+    def drawButton(self, fromMain = False): # True/False
+        cw = self.cont_wid
+
+        if not fromMain: # отрисовка контура
+            downrect = pygame.rect.Rect(self.x - cw, self.y - cw, self.wid + (cw * 2), self.hid + (cw * 2))
+            pygame.draw.rect(self.win, self.cont_col, downrect)
 
         rect = pygame.rect.Rect(self.x, self.y, self.wid, self.hid)
         pygame.draw.rect(self.win, self.col, rect)
     def currentButton(self):
-        pass
+        cw = self.cont_wid
+
+        downrect = pygame.rect.Rect(self.x - cw, self.y - cw, self.wid + (cw * 2), self.hid + (cw * 2))
+        pygame.draw.rect(self.win, self.cur_cont_col, downrect)
+
+        self.drawButton(True)
 
 # log functions
 def startlog():
@@ -139,12 +150,18 @@ def menu(bg):
     bg.fill(C_BLUE)
 def settings(bg):
     pass
-def main(bg):
+def game(bg): # как та самая игра с уничножением метеоритов
+    pass
+def cArcanoid(bg): # типа арканоида, но в космосе
+    pass
+def cRaingers(bg): # что-то типа рпг
     pass
 
 # features
 def debugMenu(bg):
     global debugFps
+    global debugLevelUp # коллекция уровней    в итоге получается вот так:
+    global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
 
 # startlog()
 menu(bg)
