@@ -35,6 +35,7 @@ bg = pygame.display.set_mode(setting_window_size)
 pygame.display.set_caption(setting_window_caption)
 pygame.display.set_icon(pygame.image.load(setting_window_icon))
 
+_main_ = True
 _menu_ = True
 _game_ = False
 _gameca_ = False
@@ -249,7 +250,7 @@ def cArcanoid(bg): # типа арканоида, но в космосе
     pass
 def cRaingers(bg): # что-то типа рпг
     pass
-def gamemenu(bg):
+def pause(bg):
     pass
 
 # features
@@ -282,16 +283,18 @@ menu(bg)
 text = Text(0, 0, bg, "Consolas", 16, (255, 255, 255))
 text.drawSysText("Привет")
 
-def cmenu(bg):
-    while _menu_:
-        fps.tick(setting_fps)
+while _main_:
+    fps.tick(setting_fps)
 
-        _settings_ # init in cycle
-        _game_
-        _mcbreak_
-        _gameca_
-        _gamecr_
+    _menu_
+    _settings_ # init in cycle
+    _scbreak_
+    _game_
+    _mcbreak_
+    _gameca_
+    _gamecr_
 
+    if _menu_ and not _mcbreak_:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 _settings_ = False
@@ -299,6 +302,8 @@ def cmenu(bg):
                 _gameca_ = False
                 _gamecr_ = False
                 pygame.quit()
+                _main_ = False
+
                 _menu_ = False
                 _mcbreak_ = True
                 break
@@ -320,7 +325,7 @@ def cmenu(bg):
                     _game_ = False
                     _gameca_ = True
                     _gamecr_ = False
-                    
+                        
                     _menu_ = False
                     _mcbreak_ = True
                 elif event.key == pygame.K_3:
@@ -329,7 +334,7 @@ def cmenu(bg):
                     _game_ = False
                     _gameca_ = False
                     _gamecr_ = True
-                    
+
                     _menu_ = False
                     _mcbreak_ = True
                 elif event.key == pygame.K_4:
@@ -338,7 +343,7 @@ def cmenu(bg):
                     _game_ = False
                     _gameca_ = False
                     _gamecr_ = False
-                    
+                        
                     _menu_ = False
                     _mcbreak_ = True
                 elif event.key == pygame.K_5 or event.key == pygame.K_q:
@@ -346,31 +351,49 @@ def cmenu(bg):
                     _game_ = False
                     _gameca_ = False
                     _gamecr_ = False
-                    
+                    # потом будет вопрос действительно ли ты хочешь выйти?
+                    pygame.quit()
+                    _main_ = False
                     _menu_ = False
                     _mcbreak_ = True
-        if _mcbreak_:
-            del _mcbreak_
-            break
-        pygame.display.update()
-
-def csettings(bg):
-    while _settings_:
-        fps.tick(setting_fps)
-
-        _settings_ # init in cycle
-        _game_
-        _mcbreak_
-        _gameca_
-        _gamecr_
-
+    elif _settings_ and not _scbreak_:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 _settings_ = False
                 _game_ = False
                 _gameca_ = False
                 _gamecr_ = False
+                _menu_ = False
                 pygame.quit()
-                _settings_ = False
-                _scbreak_ = True
-                break
+                _main_ = False
+                _scbreak_ = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pause(bg)
+    elif _mcbreak_:
+        del _mcbreak_
+        break
+    elif _scbreak_:
+        del _scbreak_
+        break
+    pygame.display.update()
+
+    # while _settings_:
+    #     fps.tick(setting_fps)
+
+    #     _settings_ # init in cycle
+    #     _game_
+    #     _mcbreak_
+    #     _gameca_
+    #     _gamecr_
+
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.QUIT:
+    #             _settings_ = False
+    #             _game_ = False
+    #             _gameca_ = False
+    #             _gamecr_ = False
+    #             pygame.quit()
+    #             _settings_ = False
+    #             _scbreak_ = True
+    #             break
