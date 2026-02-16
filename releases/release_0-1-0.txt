@@ -1,0 +1,5 @@
+CosmoGames release 0.1.0
+
+Added:
+    1. Standard game demo
+    2. Base for cArcanoid

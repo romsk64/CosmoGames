@@ -23,12 +23,13 @@ C_BLUE = (0, 0, 255)
 C_GREEN = (0, 255, 0)
 
 # json settings
-setting_fps: int = 60 # 0 -> разблокированный фпс
+setting_fps: int = 120 # 0 -> разблокированный фпс
 setting_window_size: tuple = (1920, 1000)
 setting_window_caption: str = "CosmoGames"
 setting_window_icon: str = "assets/icon/empire_at_war.jpg"
 setting_bg_wid, setting_bg_hid = 1920, 1000
 setting_count_file: str = "config/system.txt"
+setting_graphic_starcount: int = 250
 
 # program settings
 pygame.init()
@@ -47,14 +48,20 @@ _scbreak_ = False # settings cycle break
 _gcbreak_ = False # game cycle break
 _gcabreak_ = False
 _gcrbreak_ = False
+_textFPS_ = False
 fps = pygame.time.Clock()
 log_file = str()
 hitbox_flist = list()
+starList = [[], []]
+for i in range(setting_graphic_starcount):
+    starList[0].append(None)
+    starList[1].append(None)
 
 # debug
 debugFps = fps.get_fps()
 debugLevelUp = 1
 debugLevelDown = 1
+debugCodeExit = 0
 
 # classes
 class Area():
@@ -166,6 +173,7 @@ class Debug():
             objhb = Hitbox(obj_list[obj])
             hitbox_flist[obj] = objhb
         self.debugHitboxMenu_ = True
+debug = Debug(bg)
 
 class Hitbox(pygame.sprite.Sprite):
     def __init__(self, obj):
@@ -186,6 +194,66 @@ class Hitbox(pygame.sprite.Sprite):
         y = self.obj.rect.y
 
         wid
+
+class gameclass:
+    class SpaceVoyager():
+        def __init__(self, win, spdpx, wid, hid, x, y, texture = None):
+            self.win = win
+            self.spdpx = spdpx
+            self.x = x
+            self.y = y
+            self.wid = wid
+            self.hid = hid
+            self.texture = texture
+
+            self.attackRect = list()
+        # def rectInit(self):
+        #     self.rect = pygame.rect.Rect(self.x, self.y, 20, 50)
+        def rectDraw(self):
+            self.rect = pygame.rect.Rect(self.x, self.y, 20, 50)
+            pygame.draw.rect(self.win, C_RED, self.rect)
+
+        def moveL(self):
+            self.x -= self.spdpx
+            game_reloadbg(self.win)
+            game_reloadsprite()
+            # self.rect.move(self.x, self.y)
+        def moveR(self):
+            self.x += self.spdpx
+            game_reloadbg(self.win)
+            game_reloadsprite()
+            # self.rect.move(self.x, self.y)
+        def moveUp(self):
+            self.y -= self.spdpx
+            game_reloadbg(self.win)
+            game_reloadsprite()
+            # self.rect.move(self.x, self.y)
+        def moveD(self):
+            self.y += self.spdpx
+            game_reloadbg(self.win)
+            game_reloadsprite()
+            # self.rect.move(self.x, self.y)
+
+        def attack(self, clickposX, clickposY): # атака
+            # attackRect = pygame.rect.Rect(self.x, self.y, 3, 3)
+            # pygame.draw.rect(self.win, C_RED, attackRect)
+            # pygame.display.update()
+
+            # for i in range(clickposX - self.x):
+            #     for j in range(clickposY - self.y):
+            #         self.x += i
+            #         self.y += j
+
+            #         attackRect = pygame.rect.Rect(self.x, self.y, 3, 3)
+            #         pygame.draw.rect(self.win, C_RED, attackRect)
+            #         game_reloadbg(self.win)
+            #         game_reloadsprite()
+            #         pygame.display.update()
+            pass
+        # тут рег
+            # self.attackRect.append(attackRect)
+            
+            # сделать регистрацию попаданий
 
 class arcanoid:
     class Ball():
@@ -220,6 +288,10 @@ class arcanoid:
             else:
                 pass
 
+# statistics
+statKills = 0
+statTime = 0
+
 # log functions
 def startlog():
     global log_file
@@ -246,17 +318,53 @@ def menu(bg) -> int:
     return 0
 def settings(bg) -> int:
     return 0
-def game(bg) -> int: # как та самая игра с уничножением метеоритов
-    # bg.blit(pygame.image.load())
-
+def game_drawbg(bg) -> int:
     # пока генерация фона, потом сделаю нормальную картинку или нормальный шум по которому будет фон
+    global starList
+    global setting_graphic_starcount
+
     bg.fill(C_BLACK)
 
-    for i in range(250):
-        pygame.draw.rect(bg, C_WHITE, pygame.rect.Rect(random.randint(0, 1920), random.randint(0, 1080), 3, 3))
+    for i in range(setting_graphic_starcount):
+        starList[0][i - 1] = random.randint(0, 1920) # x
+        starList[1][i - 1] = random.randint(0, 1080) # y
+        pygame.draw.rect(bg, C_WHITE, pygame.rect.Rect(starList[0][i - 1], starList[1][i - 1], 3, 3))
     pygame.display.update()
 
-    return 0   
+    return 0
+def game(bg) -> int: # как та самая игра с уничножением метеоритов
+    global starList
+    global voyager
+
+    game_drawbg(bg)
+    voyager = gameclass.SpaceVoyager(bg, 5, 25, 50, 500, 500)
+    # voyager.rectInit()
+    voyager.rectDraw()
+    
+    return 0
+def game_reloadbg(bg) -> int:
+    global starList
+    global voyager
+
+    bg.fill(C_BLACK)
+
+    for i in range(setting_graphic_starcount):
+        pygame.draw.rect(bg, C_WHITE, pygame.rect.Rect(starList[0][i - 1], starList[1][i - 1], 3, 3))
+
+    return 0
+def game_reloadsprite() -> int:
+    global voyager
+
+    voyager.rectDraw()
+
+    return 0
+def game_reloadnewbg(bg) -> int:
+    global voyager
+    
+    game_drawbg(bg)
+    voyager.rectDraw()
+
+    return 0
 def cArcanoid(bg) -> int: # типа арканоида, но в космосе
     
     return 0
@@ -294,8 +402,10 @@ def reload(): # перезагрузка
 
 # startlog()
 menu(bg)
-text = Text(0, 0, bg, "Consolas", 16, (255, 255, 255))
+text = Text(0, 0, bg, "Consolas", 16, C_WHITE)
 text.drawSysText("Привет")
+
+textFPS = Text(0, 0, bg, "Consolas", 16, C_WHITE)
 
 while _main_:
     fps.tick(setting_fps)
@@ -307,6 +417,7 @@ while _main_:
     _mcbreak_
     _gameca_
     _gamecr_
+    _textFPS_
 
     if _menu_ and not _mcbreak_:
         for event in pygame.event.get():
@@ -392,6 +503,7 @@ while _main_:
                 _gameca_ = False
                 _gamecr_ = False
                 _menu_ = False
+                _textFPS_ = False
                 pygame.quit()
                 _main_ = False
                 _gcbreak_ = True
@@ -399,9 +511,44 @@ while _main_:
                 if event.key == pygame.K_ESCAPE:
                     pause(bg)
                 # debug
+                elif event.key == pygame.K_F3:
+                    if _textFPS_:
+                        _textFPS_ = False
+                    elif not _textFPS_:
+                        _textFPS_ = True
                 elif event.key == pygame.K_KP1:
                     print("Reload background")
-                    game(bg)
+                    game_reloadnewbg(bg)
+                # if event.key == pygame.K_w:
+                #     voyager.moveUp()
+                # if event.key == pygame.K_s:
+                #     voyager.moveD()
+                # if event.key == pygame.K_a:
+                #     voyager.moveL()
+                # if event.key == pygame.K_d:
+                #     voyager.moveR()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                clickposX, clickposY = event.pos
+                voyager.attack(clickposX, clickposY)
+        
+        if _textFPS_:
+            game_reloadbg(bg)
+            game_reloadsprite()
+            textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+        if not _gcbreak_:
+            pressed_keys = pygame.key.get_pressed()
+            if pressed_keys[pygame.K_w]:
+                voyager.moveUp()
+                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+            if pressed_keys[pygame.K_s]:
+                voyager.moveD()
+                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+            if pressed_keys[pygame.K_a]:
+                voyager.moveL()
+                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+            if pressed_keys[pygame.K_d]:
+                voyager.moveR()
+                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
     if _mcbreak_:
         del _mcbreak_
         break
@@ -432,3 +579,4 @@ while _main_:
     #             _settings_ = False
     #             _scbreak_ = True
     #             break
+print(f"Exit with code {debugCodeExit}")
