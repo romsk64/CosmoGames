@@ -3,6 +3,7 @@
 import pygame
 import json
 import os
+import random
 
 file_dir = os.getcwd()
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -239,19 +240,32 @@ def log(level: int, message: str, method: str):
     print(f"[{level}: {method}]: {message}")
 
 # standart functions
-def menu(bg):
+def menu(bg) -> int:
     # bgArea = Area(0, 0, setting_bg_wid, setting_bg_hid, bg, ())
     bg.fill(C_BLUE)
-def settings(bg):
-    pass
-def game(bg): # как та самая игра с уничножением метеоритов
-    pass
-def cArcanoid(bg): # типа арканоида, но в космосе
-    pass
-def cRaingers(bg): # что-то типа рпг
-    pass
-def pause(bg):
-    pass
+    return 0
+def settings(bg) -> int:
+    return 0
+def game(bg) -> int: # как та самая игра с уничножением метеоритов
+    # bg.blit(pygame.image.load())
+
+    # пока генерация фона, потом сделаю нормальную картинку или нормальный шум по которому будет фон
+    bg.fill(C_BLACK)
+
+    for i in range(250):
+        pygame.draw.rect(bg, C_WHITE, pygame.rect.Rect(random.randint(0, 1920), random.randint(0, 1080), 3, 3))
+    pygame.display.update()
+
+    return 0   
+def cArcanoid(bg) -> int: # типа арканоида, но в космосе
+    
+    return 0
+def cRaingers(bg) -> int: # что-то типа рпг
+    
+    return 0
+def pause(bg) -> int:
+    
+    return 0
 
 # features
 # def debugMenu(bg):
@@ -313,12 +327,12 @@ while _main_:
                 elif event.key == pygame.K_1:
                     game(bg) # game
                     _settings_ = False
-                    _game_ = False
+                    _game_ = True
                     _gameca_ = False
                     _gamecr_ = False
 
                     _menu_ = False
-                    _mcbreak_ = True
+                    # _mcbreak_ = True
                 elif event.key == pygame.K_2:
                     cArcanoid(bg)
                     _settings_ = False
@@ -366,15 +380,36 @@ while _main_:
                 _menu_ = False
                 pygame.quit()
                 _main_ = False
-                _scbreak_ = False
+                _scbreak_ = True
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pause(bg)
-    elif _mcbreak_:
+    elif _game_ and not _gcbreak_:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                _game_ = False
+                _settings_ = False
+                _gameca_ = False
+                _gamecr_ = False
+                _menu_ = False
+                pygame.quit()
+                _main_ = False
+                _gcbreak_ = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pause(bg)
+                # debug
+                elif event.key == pygame.K_KP1:
+                    print("Reload background")
+                    game(bg)
+    if _mcbreak_:
         del _mcbreak_
         break
     elif _scbreak_:
         del _scbreak_
+        break
+    elif _gcbreak_:
+        del _gcbreak_
         break
     pygame.display.update()
 
