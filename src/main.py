@@ -236,7 +236,6 @@ class gameclass:
             if self.chkCordLimits(3):
                 self.x += self.spdpx
                 debugCodeFly = 1
-                print(f"Flying code: {debugCodeFly}")
                 return debugCodeFly
             else:
                 game_reloadbg(self.win)
@@ -249,7 +248,8 @@ class gameclass:
             self.x += self.spdpx
             if self.chkCordLimits(4):
                 self.x -= self.spdpx
-                return 1
+                debugCodeFly = 1
+                return debugCodeFly
             else:
                 game_reloadbg(self.win)
                 game_reloadsprite()
@@ -261,7 +261,8 @@ class gameclass:
             self.y -= self.spdpx
             if self.chkCordLimits(1):
                 self.y += self.spdpx
-                return 1
+                debugCodeFly = 1
+                return debugCodeFly
             else:
                 game_reloadbg(self.win)
                 game_reloadsprite()
@@ -273,7 +274,8 @@ class gameclass:
             self.y += self.spdpx
             if self.chkCordLimits(2):
                 self.y -= self.spdpx
-                return 1
+                debugCodeFly = 1
+                return debugCodeFly
             else:
                 game_reloadbg(self.win)
                 game_reloadsprite()
@@ -299,8 +301,65 @@ class gameclass:
             # self.attackRect.append(attackRect)
             
             # сделать регистрацию попаданий
-        def attack(self, clickposX, clickposY):
+
+        #  def attacknapr(self, clickposX, clickposY): # расчет направления атаки
+        #     if clickposX == self.x and clickposY != self.y:
+        #         if clickposY > self.y:
+        #             # ровно вверх
+        #             naprav = 1
+        #         elif clickposY < self.y:
+        #             # ровно вниз
+        #             naprav = 2
+        #     if clickposY == self.y and clickposX != self.x:
+        #         if clickposX > self.x:
+        #             # ровно направо
+        #             naprav = 4
+        #         elif clickposX < self.x:
+        #             # ровно налево
+        #             naprav = 3
+
+        #     elif clickposX > self.x:
+        #         if clickposY > self.y:
+        #             # справа внизу
+        #             pass
+        #         elif clickposY < self.y:
+        #             # справа вверху
+        #             pass
+        #     elif clickposX < self.x:
+        #         if clickposY > self.y:
+        #             # слева внизу
+        #             pass
+        #         elif clickposY < self.y:
+        #             # слева вверху
+        #             pass
+
+        #     elif clickposX == self.x and clickposY == self.y:
+        #         # стрельба в рандомное место
+        #         pass
+        # def attack(self, naprav):
+            # pass
+        
+        def attack(self, clickposX, clickposY, enemyList):
+            pygame.draw.line(self.win, C_WHITE, (self.x, self.y), (clickposX, clickposY))
+            for i in len(enemyList):
+                if enemyList[i - 1].collidePoint(clickposX, clickposY):
+                    enemyList[i - 1].chgColor(C_RED)
+        def testattack(self, clickposX, clickposY):
+            pygame.draw.line(self.win, C_WHITE, (self.x, self.y), (clickposX, clickposY))
+    
+    class Enemy():
+        def __init__(self, x, y, color, texture):
+            self.x = x
+            self.y = y
+            self.color = color
+            self.texture = texture
+        def drawEnemy(self):
             pass
+        def chgColor(self, color):
+            self.color = color
+        def collidePoint(self, clickposX, clickposY):
+            if self.rect.collidepoint(clickposX, clickposY):
+                return True
 
 class arcanoid:
     class Ball():
@@ -576,7 +635,8 @@ while _main_:
                 #     voyager.moveR()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 clickposX, clickposY = event.pos
-                voyager.attack(clickposX, clickposY)
+                # voyager.attack(clickposX, clickposY)
+                voyager.testattack(clickposX, clickposY)
         
         if _textFPS_:
             game_reloadbg(bg)
@@ -584,19 +644,19 @@ while _main_:
             textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
         if not _gcbreak_:
             pressed_keys = pygame.key.get_pressed()
-            if pressed_keys[pygame.K_w]:
+            if pressed_keys[pygame.K_w] or pressed_keys[pygame.K_UP]:
                 voyager.moveUp()
                 if _textFPS_:
                     textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
-            if pressed_keys[pygame.K_s]:
+            if pressed_keys[pygame.K_s] or pressed_keys[pygame.K_DOWN]:
                 voyager.moveDown()
                 if _textFPS_:
                     textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
-            if pressed_keys[pygame.K_a]:
+            if pressed_keys[pygame.K_a] or pressed_keys[pygame.K_LEFT]:
                 voyager.moveL()
                 if _textFPS_:
                     textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
-            if pressed_keys[pygame.K_d]:
+            if pressed_keys[pygame.K_d] or pressed_keys[pygame.K_RIGHT]:
                 voyager.moveR()
                 if _textFPS_:
                     textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
