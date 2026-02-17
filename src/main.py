@@ -62,6 +62,7 @@ debugFps = fps.get_fps()
 debugLevelUp = 1
 debugLevelDown = 1
 debugCodeExit = 0
+debugCodeFly = 0
 
 # classes
 class Area():
@@ -212,29 +213,74 @@ class gameclass:
         def rectDraw(self):
             self.rect = pygame.rect.Rect(self.x, self.y, 20, 50)
             pygame.draw.rect(self.win, C_RED, self.rect)
+        def chkCordLimits(self, moveMode): # 1 - вверх, 2 - вниз, 3 - влево, 4 - вправо
+            if moveMode == 1:
+                # if self.x >= setting_bg_wid or self.x <= 0 or self.y >= setting_bg_hid or self.y <= 0:
+                    # return True
+                if (self.y + self.hid) >= setting_bg_hid:
+                    return True
+            elif moveMode == 2:
+                if self.y <= 0:
+                    return True
+            elif moveMode == 3:
+                if self.x <= 0:
+                    return True
+            elif moveMode == 4:
+                if (self.x + self.wid) >= setting_bg_wid:
+                    return True
 
         def moveL(self):
+            global debugCodeFly
+
             self.x -= self.spdpx
-            game_reloadbg(self.win)
-            game_reloadsprite()
+            if self.chkCordLimits(3):
+                self.x += self.spdpx
+                debugCodeFly = 1
+                print(f"Flying code: {debugCodeFly}")
+                return debugCodeFly
+            else:
+                game_reloadbg(self.win)
+                game_reloadsprite()
+                return 0
             # self.rect.move(self.x, self.y)
         def moveR(self):
+            global debugCodeFly
+
             self.x += self.spdpx
-            game_reloadbg(self.win)
-            game_reloadsprite()
+            if self.chkCordLimits(4):
+                self.x -= self.spdpx
+                return 1
+            else:
+                game_reloadbg(self.win)
+                game_reloadsprite()
+                return 0
             # self.rect.move(self.x, self.y)
         def moveUp(self):
+            global debugCodeFly
+            
             self.y -= self.spdpx
-            game_reloadbg(self.win)
-            game_reloadsprite()
+            if self.chkCordLimits(1):
+                self.y += self.spdpx
+                return 1
+            else:
+                game_reloadbg(self.win)
+                game_reloadsprite()
+                return 0
             # self.rect.move(self.x, self.y)
-        def moveD(self):
+        def moveDown(self):
+            global debugCodeFly
+
             self.y += self.spdpx
-            game_reloadbg(self.win)
-            game_reloadsprite()
+            if self.chkCordLimits(2):
+                self.y -= self.spdpx
+                return 1
+            else:
+                game_reloadbg(self.win)
+                game_reloadsprite()
+                return 0
             # self.rect.move(self.x, self.y)
 
-        def attack(self, clickposX, clickposY): # атака
+        # def attack(self, clickposX, clickposY): # атака
             # attackRect = pygame.rect.Rect(self.x, self.y, 3, 3)
             # pygame.draw.rect(self.win, C_RED, attackRect)
             # pygame.display.update()
@@ -249,11 +295,12 @@ class gameclass:
             #         game_reloadbg(self.win)
             #         game_reloadsprite()
             #         pygame.display.update()
-            pass
         # тут рег
             # self.attackRect.append(attackRect)
             
             # сделать регистрацию попаданий
+        def attack(self, clickposX, clickposY):
+            pass
 
 class arcanoid:
     class Ball():
@@ -539,16 +586,20 @@ while _main_:
             pressed_keys = pygame.key.get_pressed()
             if pressed_keys[pygame.K_w]:
                 voyager.moveUp()
-                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+                if _textFPS_:
+                    textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
             if pressed_keys[pygame.K_s]:
-                voyager.moveD()
-                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+                voyager.moveDown()
+                if _textFPS_:
+                    textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
             if pressed_keys[pygame.K_a]:
                 voyager.moveL()
-                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+                if _textFPS_:
+                    textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
             if pressed_keys[pygame.K_d]:
                 voyager.moveR()
-                textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
+                if _textFPS_:
+                    textFPS.drawSysText(f"FPS: {int(fps.get_fps())}")
     if _mcbreak_:
         del _mcbreak_
         break
