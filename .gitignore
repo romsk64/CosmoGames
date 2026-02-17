@@ -1,3 +1,5 @@
 .notused/
 
 src/hitboxtest.py
+
+install-pyenv-win.ps1
