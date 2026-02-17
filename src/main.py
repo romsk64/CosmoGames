@@ -217,10 +217,10 @@ class gameclass:
             if moveMode == 1:
                 # if self.x >= setting_bg_wid or self.x <= 0 or self.y >= setting_bg_hid or self.y <= 0:
                     # return True
-                if (self.y + self.hid) >= setting_bg_hid:
+                if self.y <= 0:
                     return True
             elif moveMode == 2:
-                if self.y <= 0:
+                if (self.y + self.hid) >= setting_bg_hid:
                     return True
             elif moveMode == 3:
                 if self.x <= 0:
