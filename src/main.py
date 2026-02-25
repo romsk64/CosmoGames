@@ -282,63 +282,6 @@ class gameclass:
                 game_reloadsprite()
                 return 0
             # self.rect.move(self.x, self.y)
-
-        # def attack(self, clickposX, clickposY): # атака
-            # attackRect = pygame.rect.Rect(self.x, self.y, 3, 3)
-            # pygame.draw.rect(self.win, C_RED, attackRect)
-            # pygame.display.update()
-
-            # for i in range(clickposX - self.x):
-            #     for j in range(clickposY - self.y):
-            #         self.x += i
-            #         self.y += j
-
-            #         attackRect = pygame.rect.Rect(self.x, self.y, 3, 3)
-            #         pygame.draw.rect(self.win, C_RED, attackRect)
-            #         game_reloadbg(self.win)
-            #         game_reloadsprite()
-            #         pygame.display.update()
-        # тут рег
-            # self.attackRect.append(attackRect)
-            
-            # сделать регистрацию попаданий
-
-        #  def attacknapr(self, clickposX, clickposY): # расчет направления атаки
-        #     if clickposX == self.x and clickposY != self.y:
-        #         if clickposY > self.y:
-        #             # ровно вверх
-        #             naprav = 1
-        #         elif clickposY < self.y:
-        #             # ровно вниз
-        #             naprav = 2
-        #     if clickposY == self.y and clickposX != self.x:
-        #         if clickposX > self.x:
-        #             # ровно направо
-        #             naprav = 4
-        #         elif clickposX < self.x:
-        #             # ровно налево
-        #             naprav = 3
-
-        #     elif clickposX > self.x:
-        #         if clickposY > self.y:
-        #             # справа внизу
-        #             pass
-        #         elif clickposY < self.y:
-        #             # справа вверху
-        #             pass
-        #     elif clickposX < self.x:
-        #         if clickposY > self.y:
-        #             # слева внизу
-        #             pass
-        #         elif clickposY < self.y:
-        #             # слева вверху
-        #             pass
-
-        #     elif clickposX == self.x and clickposY == self.y:
-        #         # стрельба в рандомное место
-        #         pass
-        # def attack(self, naprav):
-            # pass
         
         def attack(self, clickposX, clickposY, enemyList):
             pygame.draw.line(self.win, C_WHITE, (self.x, self.y), (clickposX, clickposY))
@@ -482,27 +425,6 @@ def cRaingers(bg) -> int: # что-то типа рпг
 def pause(bg) -> int:
     
     return 0
-
-# features
-# def debugMenu(bg):
-#     global debugFps
-#     global debugLevelUp # коллекция уровней    в итоге получается вот так:
-#     global debugLevelDown # сам уровень            debugLevelUp-debugLevelDown
-
-# def debugHitboxMenu(bg, obj_list):
-#     global hitbox_flist
-
-#     for _ in len(obj_list):
-#         hitbox_flist.append(None)
-
-#     for obj in len(obj_list):
-#         # wid = obj_list[obj].rect.width
-#         # hid = obj_list[obj].rect.height
-#         # x = obj_list[obj].rect.x
-#         # y = obj_list[obj].rect.y
-        
-#         objhb = Hitbox(obj_list[obj])
-#         hitbox_flist[obj] = objhb
 
 # cycle
 def quit(isInCycle = True, cycleVar = _main_):
@@ -689,23 +611,4 @@ while _main_:
         break
     pygame.display.update()
 
-    # while _settings_:
-    #     fps.tick(setting_fps)
-
-    #     _settings_ # init in cycle
-    #     _game_
-    #     _mcbreak_
-    #     _gameca_
-    #     _gamecr_
-
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             _settings_ = False
-    #             _game_ = False
-    #             _gameca_ = False
-    #             _gamecr_ = False
-    #             pygame.quit()
-    #             _settings_ = False
-    #             _scbreak_ = True
-    #             break
 print(f"Exit with code {debugCodeExit}")
