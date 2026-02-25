@@ -3,6 +3,7 @@
 import pygame
 import json
 import os
+import sys
 import random
 
 file_dir = os.getcwd()
@@ -214,6 +215,8 @@ class gameclass:
         def rectDraw(self):
             self.rect = pygame.rect.Rect(self.x, self.y, 20, 50)
             pygame.draw.rect(self.win, C_RED, self.rect)
+        def textureDraw(self):
+            pass
         def chkCordLimits(self, moveMode): # 1 - вверх, 2 - вниз, 3 - влево, 4 - вправо
             if moveMode == 1:
                 # if self.x >= setting_bg_wid or self.x <= 0 or self.y >= setting_bg_hid or self.y <= 0:
@@ -426,19 +429,11 @@ def pause(bg) -> int:
     
     return 0
 
-# cycle
-def quit(isInCycle = True, cycleVar = _main_):
-    global _main_
-    global _stdbreak_
-
-    if isInCycle:
-        cycleVar = False
-        _main_ = False
-        pygame.quit()
-        _stdbreak_ = True
-        
+# cycle 
 def reload(): # перезагрузка
+    pygame.quit()
     os.system("py -3.12 reload.py")
+    quit()
 
 # startlog()
 menu(bg)
