@@ -48,6 +48,7 @@ _scbreak_ = False # settings cycle break
 _gcbreak_ = False # game cycle break
 _gcabreak_ = False
 _gcrbreak_ = False
+_stdbreak_ = False
 _textFPS_ = False
 fps = pygame.time.Clock()
 log_file = str()
@@ -354,7 +355,8 @@ class gameclass:
             self.color = color
             self.texture = texture
         def drawEnemy(self):
-            pass
+            self.rect = pygame.rect.Rect(self.x, self.y, 20, 50)
+            pygame.draw.rect(self.win, C_RED, self.rect)
         def chgColor(self, color):
             self.color = color
         def collidePoint(self, clickposX, clickposY):
@@ -503,8 +505,18 @@ def pause(bg) -> int:
 #         hitbox_flist[obj] = objhb
 
 # cycle
+def quit(isInCycle = True, cycleVar = _main_):
+    global _main_
+    global _stdbreak_
+
+    if isInCycle:
+        cycleVar = False
+        _main_ = False
+        pygame.quit()
+        _stdbreak_ = True
+        
 def reload(): # перезагрузка
-    pass
+    os.system("py -3.12 reload.py")
 
 # startlog()
 menu(bg)
@@ -625,6 +637,8 @@ while _main_:
                 elif event.key == pygame.K_KP1:
                     print("Reload background")
                     game_reloadnewbg(bg)
+                elif event.key == pygame.K_F12:
+                    reload()
                 # if event.key == pygame.K_w:
                 #     voyager.moveUp()
                 # if event.key == pygame.K_s:
@@ -668,6 +682,10 @@ while _main_:
         break
     elif _gcbreak_:
         del _gcbreak_
+        break
+
+    elif _stdbreak_:
+        del _stdbreak_
         break
     pygame.display.update()
 
